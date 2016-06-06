@@ -30,7 +30,7 @@ cp /etc/init.d/haproxy /etc/init.d/dokku-haproxy
 # set new haproxy config location
 sudo sed -i 's/CONFIG=\/etc\/haproxy\/haproxy.cfg/CONFIG=\/var\/lib\/dokku-haproxy\/haproxy.cfg/g' /etc/init.d/dokku-haproxy
 sudo sed -i 's/PIDFILE=\/var\/run\/haproxy.pid/PIDFILE=\/var\/run\/dokku-haproxy.pid/g' /etc/init.d/dokku-haproxy
-sudo sed -i 's//PIDFILE=\/var\/run\/dokku-haproxy.pid/g' /etc/init.d/dokku-haproxy
+sudo sed -i 's/RUNDIR=\/run\/haproxy/RUNDIR=\/run\/dokku-haproxy/g' /etc/init.d/dokku-haproxy
 
 
 # enable stats
