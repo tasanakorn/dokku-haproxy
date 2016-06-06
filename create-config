@@ -18,11 +18,13 @@ if(fs.existsSync(ports_file)) {
     var iport = ports[eport][1];
 
     var ip_file = APP_ROOT + '/IP.' + proc + '.1';
+    var port_file = APP_ROOT + '/PORT.' + proc + '.1';
 
     if(fs.existsSync(ip_file)) {
       var ip = fs.readFileSync(ip_file).toString().replace('\n', '');
+      var port = fs.readFileSync(port_file).toString().replace('\n', '');
 
-      mappings.push([eport, proc, ip, iport]);
+      mappings.push([eport, proc, ip, port]);
     }
   });
 

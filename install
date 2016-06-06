@@ -8,7 +8,7 @@ sudo apt-get -y install haproxy
 
 # give access
 sudo cat<<EOF > /etc/sudoers.d/dokku-haproxy
-  %dokku ALL=(ALL) NOPASSWD:/etc/init.d/dokkuhaproxy *
+  %dokku ALL=(ALL) NOPASSWD:/etc/init.d/dokku-haproxy *
 EOF
 
 # create directory
@@ -29,6 +29,9 @@ EOF
 cp /etc/init.d/haproxy /etc/init.d/dokku-haproxy
 # set new haproxy config location
 sudo sed -i 's/CONFIG=\/etc\/haproxy\/haproxy.cfg/CONFIG=\/var\/lib\/dokku-haproxy\/haproxy.cfg/g' /etc/init.d/dokku-haproxy
+sudo sed -i 's/PIDFILE=\/var\/run\/haproxy.pid/PIDFILE=\/var\/run\/dokku-haproxy.pid/g' /etc/init.d/dokku-haproxy
+sudo sed -i 's//PIDFILE=\/var\/run\/dokku-haproxy.pid/g' /etc/init.d/dokku-haproxy
+
 
 # enable stats
 cat<<EOF > /var/lib/dokku-haproxy/_11_stats.cfg
