@@ -28,16 +28,17 @@ if(fs.existsSync(ports_file)) {
     }
   });
 
+  console.log(mappings);
+
   var config = mappings.map(function(m){
-    var s = 'listen port-' + m[0] + ' :' + m[0] + '\n';
+    var s = 'listen port-' + m[0] + '\n';
+    s += '  bind *:' + m[0] + '\n';
     s += '  mode tcp\n';
-    s += '  log global\n';
-    s += '  option tcplog\n',
-    s += '  timeout connect 5s\n';
-    s += '  timeout client 24h\n';
-    s += '  timeout server 24h\n';
+    s += '  timeout connect  5s\n';
+    s += '  timeout client  10s\n';
+    s += '  timeout server  10s\n';
     s += '  maxconn 512000\n';
-    s += '  server ' + m[1] + '.1 ' + m[2] + ':' + m[3] + ' check\n';
+    s += '  server ' + m[1] + '.1 ' + m[2] + ':' + m[0] + ' check\n';
     return s;
   }).join('\n') + '\n';
 
