@@ -1,6 +1,7 @@
 #!/usr/bin/env nodejs
 
 var fs = require('fs');
+var execSync = require('child_process').execSync;
 
 var APP = process.argv[2];
 var DOKKU_ROOT = process.env['DOKKU_ROOT'];
@@ -18,12 +19,23 @@ if(fs.existsSync(ports_file)) {
     var iport = ports[eport][1];
 
     var ip_file = APP_ROOT + '/IP.' + proc + '.1';
+    var port_file = APP_ROOT + '/PORT.' + proc + '.1';
+    var container_file = APP_ROOT + '/CONTAINER.' + proc + '.1';
+
+    if(fs.existsSync(port_file)) {
+      iport = fs.readFileSync(port_file).toString().replace('\n', '');
+    }
 
     if(fs.existsSync(ip_file)) {
       var ip = fs.readFileSync(ip_file).toString().replace('\n', '');
 
       mappings.push([eport, proc, ip, iport]);
-    }
+    } else if (fs.existsSync(container_file)) {
+      console.log("Load container_file");
+      var ids = fs.readFileSync(container_file).toString().replace('\n','');
+      var ip = execSync('docker inspect --format=\'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' \'' + ids + '\'').toString().replace('\n','');
+      mappings.push([eport, proc, ip, iport]);
+    } 
   });
 
   console.log(mappings);
@@ -36,7 +48,7 @@ if(fs.existsSync(ports_file)) {
     s += '  timeout client  10s\n';
     s += '  timeout server  10s\n';
     s += '  maxconn 512000\n';
-    s += '  server ' + m[1] + '.1 ' + m[2] + ':' + m[0] + ' check\n';
+    s += '  server ' + m[1] + '.1 ' + m[2] + ':' + m[3] + ' check\n';
     return s;
   }).join('\n') + '\n';
 
